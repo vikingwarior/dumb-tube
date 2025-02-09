@@ -1,5 +1,5 @@
 # dumb-tube
-An extension to help those who want to use youtube for learning, but often end up being distracted and wasting time
+An extension to help those who want to use youtube for learning, but often end up getting distracted and wasting time
 
 ## Features:
 - Remove all the videos from Youtuve Landing Page

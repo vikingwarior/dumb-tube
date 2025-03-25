@@ -1,10 +1,13 @@
 import React from "react";
 
 const App: React.FC = () => {
-  const changeBackgroundColor = (color: string) => {
+  const hideElements = (action: string, elementSelector: string) => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs[0].id) {
-        chrome.tabs.sendMessage(tabs[0].id, { action: "change_bg", color });
+        chrome.tabs.sendMessage(tabs[0].id, {
+          action: action,
+          selector: elementSelector,
+        });
       }
     });
   };
@@ -12,11 +15,12 @@ const App: React.FC = () => {
   return (
     <div>
       <h1>Chrome Extension</h1>
-      <button onClick={() => {
-          changeBackgroundColor("lightblue")
+      <button
+        onClick={() => {
+          hideElements("hide", "#logo-icon > span > div");
           console.log("hi");
-          document.body.style.backgroundColor = "green";
-        }}>
+        }}
+      >
         Change BG to Light Blue
       </button>
     </div>

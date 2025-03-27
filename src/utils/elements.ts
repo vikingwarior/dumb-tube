@@ -10,7 +10,7 @@ export const elements = [
       {
         label: "Notifications",
         selector:
-          "ytd-rich-grid-renderer.style-scope.ytd-two-column-browse-results-renderer",
+          "ytd-notification-topbar-button-renderer.style-scope.ytd-masthead",
       },
     ],
   },

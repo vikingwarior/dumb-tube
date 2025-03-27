@@ -1,5 +1,5 @@
 import { ToggleButton } from "primereact/togglebutton";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const toggleElement = (action: string, elementSelector: string) => {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -28,12 +28,6 @@ interface PropertyToggleProps {
 const PropertyToggle = ({ label, selector }: PropertyToggleProps) => {
   const key: string = label+ "-" + selector;
   const [checked, setChecked] = useState(getOrSetPropertyValue(label, selector));
-
-  useEffect(() => {
-    if (localStorage.getItem(key) === "true") {
-      toggleElement("hide", selector);
-    }
-  }, [])
 
   return (
     <div>

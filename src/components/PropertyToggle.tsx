@@ -1,24 +1,32 @@
 import { ToggleButton } from "primereact/togglebutton";
 import { useState } from "react";
 
+import {triggerBrowserMessage} from "../utils/helpers"
+
+const addOrRemoveEntryFromLocalStorage = (action: string, list: string[], elementSelector: string) => {
+  if (action === "hide") {
+    list.push(elementSelector);
+  } else {
+    let elemIdx = list.indexOf(elementSelector);
+    list.splice(elemIdx, 1);
+  }
+  localStorage.setItem("hidden-items", JSON.stringify(list));
+}
+
 const toggleElement = (action: string, elementSelector: string) => {
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    if (tabs[0].id) {
-      chrome.tabs.sendMessage(tabs[0].id, {
-        action: action,
-        selector: elementSelector,
-      });
-    }
-  });
+  let list: string[] = JSON.parse(localStorage.getItem("hidden-items") || "[]");
+  addOrRemoveEntryFromLocalStorage(action, list, elementSelector);
+
+  triggerBrowserMessage(action, elementSelector);
 };
 
-const getOrSetPropertyValue = (label: string, selector: string): boolean => {
-  const key: string = label+ "-" + selector;
-  let val = localStorage.getItem(key);
-  if (val === null) {
-    localStorage.setItem(key, "false");
+const getOrSetPropertyValue = (_label: string, selector: string): boolean => {
+  let hiddenElem = JSON.parse(localStorage.getItem("hidden-items") || "[]");
+  let elemIdx = hiddenElem.indexOf(selector);
+  if (elemIdx !== -1) {
+    return true;
   }
-  return JSON.parse(val || "false");
+  return false;
 };
 
 interface PropertyToggleProps {
@@ -26,7 +34,6 @@ interface PropertyToggleProps {
   selector: string;
 }
 const PropertyToggle = ({ label, selector }: PropertyToggleProps) => {
-  const key: string = label+ "-" + selector;
   const [checked, setChecked] = useState(getOrSetPropertyValue(label, selector));
 
   return (
@@ -37,7 +44,6 @@ const PropertyToggle = ({ label, selector }: PropertyToggleProps) => {
         offLabel="Visible"
         onLabel="Hidden"
         onChange={(e: any) => {
-          localStorage.setItem(key, e.value);
           setChecked(e.value);
           toggleElement(e.value ? "hide" : "show", selector);
         }}
